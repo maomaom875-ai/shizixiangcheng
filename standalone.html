@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Math Master - 十字相乘法计算器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: white;
+            font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #fbbf24;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #22d3ee;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .formula-display {
+            background: rgba(30, 27, 75, 0.6);
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        }
+
+        .formula-text {
+            font-size: 20px;
+            color: #fde68a;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .input-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-label {
+            font-size: 14px;
+            color: #22d3ee;
+            font-weight: 500;
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #22d3ee;
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .solve-button {
+            width: 100%;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #0f172a;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+            margin-bottom: 30px;
+        }
+
+        .solve-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6);
+        }
+
+        .solve-button:active {
+            transform: translateY(0);
+        }
+
+        .result-container {
+            background: rgba(30, 27, 75, 0.6);
+            border: 2px solid #22d3ee;
+            border-radius: 16px;
+            padding: 30px 20px;
+            margin-top: 30px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-title {
+            font-size: 24px;
+            color: #fbbf24;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .result-text {
+            font-size: 18px;
+            color: #e5e7eb;
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .cross-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin: 30px 0;
+            padding: 20px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .term-label {
+            font-size: 18px;
+            color: #fbbf24;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .col-value {
+            background: rgba(34, 211, 238, 0.2);
+            border: 2px solid #22d3ee;
+            border-radius: 8px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.3);
+        }
+
+        .cross-lines {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .cross-lines::before,
+        .cross-lines::after {
+            content: '';
+            position: absolute;
+            background: #fbbf24;
+            opacity: 0.5;
+        }
+
+        .cross-lines::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+        }
+
+        .cross-lines::after {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%) rotate(-45deg);
+        }
+
+        .calc-text {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #fbbf24;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .example-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .example-button {
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid #22d3ee;
+            color: #22d3ee;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .example-button:hover {
+            background: rgba(34, 211, 238, 0.2);
+            border-color: #fbbf24;
+            color: #fbbf24;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 24px;
+            }
+
+            .cross-diagram {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">数学十字君</div>
+        <div class="subtitle">十字相乘法因式分解计算器</div>
+        
+        <div class="formula-display">
+            <div class="formula-text" id="formulaDisplay">输入系数开始</div>
+        </div>
+
+        <div class="input-grid">
+            <div class="input-item">
+                <label class="input-label">x²</label>
+                <input type="number" class="input-field" id="A" value="0" step="any">
+            </div>
+            <div class="input-item">
+                <label class="input-label">xy</label>
+                <input type="number" class="input-field" id="D" value="0" step="any">
+            </div>
+            <div class="input-item">
+                <label class="input-label">y²</label>
+                <input type="number" class="input-field" id="B" value="0" step="any">
+            </div>
+            <div class="input-item">
+                <label class="input-label">x</label>
+                <input type="number" class="input-field" id="G" value="0" step="any">
+            </div>
+            <div class="input-item">
+                <label class="input-label">y</label>
+                <input type="number" class="input-field" id="H" value="0" step="any">
+            </div>
+            <div class="input-item">
+                <label class="input-label">常数</label>
+                <input type="number" class="input-field" id="K" value="0" step="any">
+            </div>
+        </div>
+
+        <button class="solve-button" onclick="solvePolynomial()">开始分解</button>
+
+        <div class="example-buttons">
+            <div style="color: #22d3ee; font-size: 14px; margin-bottom: 5px;">示例多项式：</div>
+            <button class="example-button" onclick="loadExample(1, 5, 1, 2, 3, 6)">
+                x² + 5xy + y² + 2x + 3y + 6
+            </button>
+            <button class="example-button" onclick="loadExample(2, 7, 3, 1, 4, -1)">
+                2x² + 7xy + 3y² + x + 4y - 1
+            </button>
+            <button class="example-button" onclick="loadExample(1, 5, 6, 5, 6, 0)">
+                x² + 5xy + 6y² + 5x + 6y
+            </button>
+        </div>
+
+        <div id="resultContainer"></div>
+    </div>
+
+    <script>
+        // 更新公式显示
+        function updateFormula() {
+            const A = parseFloat(document.getElementById('A').value) || 0;
+            const D = parseFloat(document.getElementById('D').value) || 0;
+            const B = parseFloat(document.getElementById('B').value) || 0;
+            const G = parseFloat(document.getElementById('G').value) || 0;
+            const H = parseFloat(document.getElementById('H').value) || 0;
+            const K = parseFloat(document.getElementById('K').value) || 0;
+
+            let formula = '';
+            
+            if (A !== 0) formula += `${A === 1 ? '' : A === -1 ? '-' : A}x²`;
+            if (D !== 0) formula += `${formula ? (D > 0 ? ' + ' : ' - ') : (D < 0 ? '-' : '')}${Math.abs(D) === 1 ? '' : Math.abs(D)}xy`;
+            if (B !== 0) formula += `${formula ? (B > 0 ? ' + ' : ' - ') : (B < 0 ? '-' : '')}${Math.abs(B) === 1 ? '' : Math.abs(B)}y²`;
+            if (G !== 0) formula += `${formula ? (G > 0 ? ' + ' : ' - ') : (G < 0 ? '-' : '')}${Math.abs(G) === 1 ? '' : Math.abs(G)}x`;
+            if (H !== 0) formula += `${formula ? (H > 0 ? ' + ' : ' - ') : (H < 0 ? '-' : '')}${Math.abs(H) === 1 ? '' : Math.abs(H)}y`;
+            if (K !== 0) formula += `${formula ? (K > 0 ? ' + ' : ' - ') : (K < 0 ? '-' : '')}${Math.abs(K)}`;
+
+            document.getElementById('formulaDisplay').textContent = formula || '0';
+        }
+
+        // 监听输入变化
+        ['A', 'D', 'B', 'G', 'H', 'K'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateFormula);
+        });
+
+        // 加载示例
+        function loadExample(A, D, B, G, H, K) {
+            document.getElementById('A').value = A;
+            document.getElementById('D').value = D;
+            document.getElementById('B').value = B;
+            document.getElementById('G').value = G;
+            document.getElementById('H').value = H;
+            document.getElementById('K').value = K;
+            updateFormula();
+        }
+
+        // 寻找因数
+        function findFactors(n) {
+            if (n === 0) return [[0, 1]];
+            
+            const factors = [];
+            const absN = Math.abs(n);
+            
+            for (let i = 1; i <= Math.sqrt(absN); i++) {
+                if (absN % i === 0) {
+                    const j = absN / i;
+                    if (n > 0) {
+                        factors.push([i, j]);
+                        factors.push([-i, -j]);
+                        if (i !== j) {
+                            factors.push([j, i]);
+                            factors.push([-j, -i]);
+                        }
+                    } else {
+                        factors.push([i, -j]);
+                        factors.push([-i, j]);
+                        if (i !== j) {
+                            factors.push([j, -i]);
+                            factors.push([-j, i]);
+                        }
+                    }
+                }
+            }
+            
+            return factors;
+        }
+
+        // 格式化符号
+        function formatSign(num) {
+            if (num === 0) return '';
+            return num > 0 ? ` + ${num}` : ` - ${Math.abs(num)}`;
+        }
+
+        function formatCoeff(coeff, variable) {
+            if (coeff === 0) return '';
+            const absCoeff = Math.abs(coeff);
+            const sign = coeff > 0 ? '+' : '-';
+            const coeffStr = absCoeff === 1 && variable ? '' : absCoeff;
+            return ` ${sign} ${coeffStr}${variable}`;
+        }
+
+        // 求解多项式
+        function solvePolynomial() {
+            const A = parseFloat(document.getElementById('A').value) || 0;
+            const D = parseFloat(document.getElementById('D').value) || 0;
+            const B = parseFloat(document.getElementById('B').value) || 0;
+            const G = parseFloat(document.getElementById('G').value) || 0;
+            const H = parseFloat(document.getElementById('H').value) || 0;
+            const K = parseFloat(document.getElementById('K').value) || 0;
+
+            // 检查是否可以分解
+            if (A === 0 && B === 0 && D === 0) {
+                showError('无法分解：缺少二次项');
+                return;
+            }
+
+            const factorsA = findFactors(A);
+            const factorsB = findFactors(B);
+
+            let found = false;
+            let a1, a2, b1, b2, c1, c2;
+
+            // 尝试所有可能的因数组合
+            for (const [fa1, fa2] of factorsA) {
+                for (const [fb1, fb2] of factorsB) {
+                    // 检查 xy 项
+                    if (fa1 * fb2 + fa2 * fb1 === D) {
+                        // 尝试分解常数项
+                        const factorsK = findFactors(K);
+                        for (const [fk1, fk2] of factorsK) {
+                            // 检查 x 和 y 项
+                            if (fa1 * fk2 + fa2 * fk1 === G && fb1 * fk2 + fb2 * fk1 === H) {
+                                found = true;
+                                a1 = fa1;
+                                a2 = fa2;
+                                b1 = fb1;
+                                b2 = fb2;
+                                c1 = fk1;
+                                c2 = fk2;
+                                break;
+                            }
+                        }
+                        if (found) break;
+                    }
+                    if (found) break;
+                }
+                if (found) break;
+            }
+
+            if (!found) {
+                showError('该多项式不能用十字相乘法分解');
+                return;
+            }
+
+            showResult(a1, b1, c1, a2, b2, c2, A, D, G, H, K);
+        }
+
+        function showError(message) {
+            document.getElementById('resultContainer').innerHTML = `
+                <div class="error-message">${message}</div>
+            `;
+        }
+
+        function showResult(a1, b1, c1, a2, b2, c2, A, D, G, H, K) {
+            const factor1 = `(${a1 === 1 ? '' : a1 === -1 ? '-' : a1}x${formatCoeff(b1, 'y')}${formatCoeff(c1, '')})`;
+            const factor2 = `(${a2 === 1 ? '' : a2 === -1 ? '-' : a2}x${formatCoeff(b2, 'y')}${formatCoeff(c2, '')})`;
+
+            document.getElementById('resultContainer').innerHTML = `
+                <div class="result-container">
+                    <div class="result-title">✨ 分解结果 ✨</div>
+                    
+                    <div class="result-text" style="font-size: 24px; color: #fbbf24; font-weight: bold;">
+                        ${factor1} ${factor2}
+                    </div>
+
+                    <div class="cross-diagram">
+                        <div class="column">
+                            <div class="term-label">x</div>
+                            <div class="col-value">${a1}</div>
+                            <div class="col-value">${a2}</div>
+                        </div>
+
+                        <div class="column">
+                            <div class="term-label">y</div>
+                            <div class="col-value">${b1}</div>
+                            <div class="col-value">${b2}</div>
+                        </div>
+
+                        <div class="column">
+                            <div class="term-label">常数</div>
+                            <div class="col-value">${c1}</div>
+                            <div class="col-value">${c2}</div>
+                        </div>
+                    </div>
+
+                    <div class="result-text" style="font-size: 16px;">
+                        <strong style="color: #22d3ee;">验证过程：</strong>
+                    </div>
+
+                    <div class="calc-text">
+                        <strong>x² 项:</strong> ${a1} × ${a2} = ${A}
+                    </div>
+
+                    <div class="calc-text">
+                        <strong>xy 项:</strong> ${a1} × ${b2} + ${a2} × ${b1} = ${a1 * b2} + ${a2 * b1} = ${D}
+                    </div>
+
+                    <div class="calc-text">
+                        <strong>y² 项:</strong> ${b1} × ${b2} = ${b1 * b2}
+                    </div>
+
+                    <div class="calc-text">
+                        <strong>x 项:</strong> ${a1} × ${c2} + ${a2} × ${c1} = ${a1 * c2} + ${a2 * c1} = ${G}
+                    </div>
+
+                    <div class="calc-text">
+                        <strong>y 项:</strong> ${b1} × ${c2} + ${b2} × ${c1} = ${b1 * c2} + ${b2 * c1} = ${H}
+                    </div>
+
+                    <div class="calc-text">
+                        <strong>常数项:</strong> ${c1} × ${c2} = ${K}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 初始化
+        updateFormula();
+    </script>
+</body>
+</html>
