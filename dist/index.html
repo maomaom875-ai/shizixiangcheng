@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Math Master - 十字君</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              space: '#0f172a',
+              midknight: '#1e1b4b',
+              gold: '#fbbf24',
+              goldlight: '#fde68a',
+              neon: '#22d3ee',
+            },
+            fontFamily: {
+              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace'],
+              sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+            },
+            animation: {
+              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'glow': 'glow 2s ease-in-out infinite alternate',
+              'float': 'float 3s ease-in-out infinite',
+              'beam-left': 'beamLeft 0.8s ease-out forwards',
+              'beam-right': 'beamRight 0.8s ease-out forwards',
+              'explode': 'explode 0.5s ease-out forwards',
+            },
+            keyframes: {
+              glow: {
+                '0%': { boxShadow: '0 0 5px #fbbf24, 0 0 10px #fbbf24' },
+                '100%': { boxShadow: '0 0 20px #fbbf24, 0 0 30px #fbbf24' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              beamLeft: {
+                '0%': { opacity: '0', transform: 'translateX(-50px) translateY(-50px)' },
+                '100%': { opacity: '1', transform: 'translateX(0) translateY(0)' },
+              },
+              beamRight: {
+                '0%': { opacity: '0', transform: 'translateX(50px) translateY(-50px)' },
+                '100%': { opacity: '1', transform: 'translateX(0) translateY(0)' },
+              },
+              explode: {
+                '0%': { transform: 'scale(1)', opacity: '1' },
+                '50%': { transform: 'scale(1.5)', opacity: '0.8' },
+                '100%': { transform: 'scale(2)', opacity: '0' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        background-color: #0f172a;
+        color: white;
+        overflow: hidden; /* App-like feel */
+      }
+      /* Custom Scrollbar for results */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e1b4b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #fbbf24;
+        border-radius: 2px;
+      }
+    </style>
+
+<link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@tarojs/taro": "https://aistudiocdn.com/@tarojs/taro@^4.1.8"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-CLcQNJ8G.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-05woKWWV.css">
+</head>
+  <body>
+    <div id="root"></div>
+</body>
+</html>
